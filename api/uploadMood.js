@@ -1,5 +1,5 @@
 import { put } from '@vercel/blob';
-import allowCors from './cors';
+import allowCors from './cors.js';
 
 async function handler(req, res) {
   try {

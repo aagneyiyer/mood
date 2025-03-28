@@ -1,6 +1,6 @@
-import { parse } from 'csv-parse/sync';
+import { parse } from 'csv-parse';
 import { list } from '@vercel/blob';
-import allowCors from './cors';
+import allowCors from './cors.js';
 
 const MOOD_COLORS = {
   'goated': '#1B5E20',        // Dark green

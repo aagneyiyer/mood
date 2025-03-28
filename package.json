@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Daily mood tracking API",
   "main": "api/refreshMood.js",
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel deploy"
