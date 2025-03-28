@@ -1,5 +1,6 @@
 import { parse } from 'csv-parse/sync';
 import { list } from '@vercel/blob';
+import allowCors from './cors';
 
 const MOOD_COLORS = {
   'goated': '#1B5E20',        // Dark green
@@ -9,7 +10,7 @@ const MOOD_COLORS = {
   'awful': '#B71C1C'          // Bright red
 };
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   try {
     if (req.method !== 'GET') {
       return res.status(405).json({ error: 'Method not allowed' });
@@ -59,3 +60,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to process CSV data' });
   }
 }
+
+export default allowCors(handler);
