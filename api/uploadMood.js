@@ -7,13 +7,14 @@ async function handler(req, res) {
       return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const csvContent = req.body;
-    if (!csvContent) {
+    const { csv } = req.body; // Extract CSV data from JSON request body
+
+    if (!csv) {
       return res.status(400).json({ error: 'CSV content is required' });
     }
 
     // Upload to Vercel Blob Storage
-    const blob = await put('mood.csv', csvContent, {
+    const blob = await put('mood.csv', csv, {
       access: 'public',
       contentType: 'text/csv'
     });
