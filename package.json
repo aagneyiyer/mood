@@ -8,6 +8,7 @@
     "deploy": "vercel deploy"
   },
   "dependencies": {
+    "@vercel/blob": "^0.22.1",
     "csv-parse": "^5.5.3"
   }
 }

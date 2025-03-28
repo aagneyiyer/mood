@@ -1,4 +1,5 @@
 import { parse } from 'csv-parse/sync';
+import { list } from '@vercel/blob';
 
 const MOOD_COLORS = {
   'goated': '#1B5E20',        // Dark green
@@ -8,16 +9,25 @@ const MOOD_COLORS = {
   'awful': '#B71C1C'          // Bright red
 };
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   try {
-    if (req.method !== 'POST') {
+    if (req.method !== 'GET') {
       return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const csvContent = req.body;
-    if (!csvContent) {
-      return res.status(400).json({ error: 'CSV content is required' });
+    // Get the latest CSV from Blob storage
+    const { blobs } = await list();
+    const latestBlob = blobs
+      .filter(blob => blob.pathname === 'mood.csv')
+      .sort((a, b) => b.uploadedAt - a.uploadedAt)[0];
+
+    if (!latestBlob) {
+      return res.status(404).json({ error: 'No mood data found' });
     }
+
+    // Fetch the CSV content
+    const response = await fetch(latestBlob.url);
+    const csvContent = await response.text();
 
     // Parse CSV content
     const records = parse(csvContent, {
@@ -25,13 +35,21 @@ export default function handler(req, res) {
       skip_empty_lines: true
     });
 
-    // Create date to color mapping
+    // Get current year
+    const currentYear = new Date().getFullYear();
+
+    // Create date to color mapping (only for current year)
     const moodMapping = {};
     records.forEach(record => {
       const date = record.full_date;
-      const mood = record.mood.toLowerCase();
-      if (MOOD_COLORS[mood]) {
-        moodMapping[date] = MOOD_COLORS[mood];
+      const year = parseInt(date.split('-')[0]);
+      
+      // Only process entries from current year
+      if (year === currentYear) {
+        const mood = record.mood.toLowerCase();
+        if (MOOD_COLORS[mood]) {
+          moodMapping[date] = MOOD_COLORS[mood];
+        }
       }
     });
 
