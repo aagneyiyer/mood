@@ -1,0 +1,13 @@
+{
+  "name": "daily-mood",
+  "version": "1.0.0",
+  "description": "Daily mood tracking API",
+  "main": "api/refreshMood.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel deploy"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.3"
+  }
+}
